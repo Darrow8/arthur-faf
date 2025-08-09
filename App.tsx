@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React, { useEffect, useMemo, useState } from 'react';
 import { Platform, StatusBar, StyleSheet, useColorScheme, View, PermissionsAndroid, Text } from 'react-native';
 import { ArViewerView } from 'react-native-ar-viewer';
@@ -28,31 +21,30 @@ function App() {
     }
 
     // iOS: download a sample USDZ locally for ARKit
-    const controller = new AbortController();
     const download = async () => {
       try {
-        const destPath = RNFS.CachesDirectoryPath + '/toy_biplane.usdz';
-        // Small Apple sample usdz; if unavailable in future, replace with another public USDZ
-        const url = 'https://developer.apple.com/augmented-reality/quick-look/models/toy_biplane/toy_biplane.usdz';
+        // Use a stable Apple sample. The toy_biplane URL returns 404 now.
+        const urlPrimary = 'https://developer.apple.com/augmented-reality/quick-look/models/teapot/teapot.usdz';
+        const urlFallback = 'https://developer.apple.com/augmented-reality/quick-look/models/retrotv/retrotv.usdz';
+        const destPath = RNFS.CachesDirectoryPath + '/sample.usdz';
         if (await RNFS.exists(destPath)) {
           console.log('USDZ already cached at', destPath);
           setIosModelPath(destPath);
           return;
         }
-        console.log('Downloading USDZ from', url);
-        const res = await RNFS.downloadFile({ fromUrl: url, toFile: destPath }).promise;
-        console.log('USDZ download status', res.statusCode, '->', destPath);
-        if (res.statusCode === 200) {
-          setIosModelPath(destPath);
-        } else {
-          console.log('USDZ download failed, status:', res.statusCode);
+        console.log('Downloading USDZ from', urlPrimary);
+        let res = await RNFS.downloadFile({ fromUrl: urlPrimary, toFile: destPath }).promise;
+        if (res.statusCode !== 200) {
+          console.log('Primary USDZ download failed, status:', res.statusCode, 'retrying fallback');
+          res = await RNFS.downloadFile({ fromUrl: urlFallback, toFile: destPath }).promise;
         }
+        console.log('USDZ download status', res.statusCode, '->', destPath);
+        if (res.statusCode === 200) setIosModelPath(destPath);
       } catch (e) {
         console.log('USDZ download error', e);
       }
     };
     download();
-    return () => controller.abort();
   }, []);
 
   return (
@@ -61,7 +53,7 @@ function App() {
       <View style={styles.viewer}>
         {demoModel ? (
           <ArViewerView
-            style={StyleSheet.absoluteFill}
+            style={StyleSheet.absoluteFillObject}
             model={demoModel}
             lightEstimation
             manageDepth
@@ -73,7 +65,6 @@ function App() {
             onEnded={() => console.log('AR ended')}
             onModelPlaced={() => console.log('AR model placed')}
             onModelRemoved={() => console.log('AR model removed')}
-            onError={(e: any) => console.log('AR error', e)}
           />
         ) : (
           <View style={styles.loadingOverlay}>
