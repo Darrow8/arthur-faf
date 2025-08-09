@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Platform, StatusBar, StyleSheet, useColorScheme, View, PermissionsAndroid, Text } from 'react-native';
 import { ArViewerView } from 'react-native-ar-viewer';
 import RNFS from 'react-native-fs';
+import VoiceAgent from './src/VoiceAgent';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -72,6 +73,9 @@ function App() {
           </View>
         )}
       </View>
+      <View style={styles.voiceBar}>
+        <VoiceAgent />
+      </View>
     </View>
   );
 }
@@ -82,6 +86,12 @@ const styles = StyleSheet.create({
   },
   viewer: {
     flex: 1,
+  },
+  voiceBar: {
+    padding: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: '#ddd',
+    backgroundColor: '#fafafa',
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,

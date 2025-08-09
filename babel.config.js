@@ -8,5 +8,8 @@ module.exports = {
       },
     ],
   ],
-  // No extra JSX transform plugin needed; handled by the preset above
+  plugins: [
+    ['@babel/plugin-transform-react-jsx', { runtime: 'classic' }],
+    ['module:react-native-dotenv', { moduleName: '@env', path: '.env', safe: true }],
+  ],
 };

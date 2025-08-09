@@ -95,3 +95,34 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+## Voice Assistant (OpenAI Realtime)
+
+This project includes a minimal push-to-talk voice assistant powered by OpenAI Realtime via WebRTC.
+
+### Setup
+
+1. Create a `.env` file in the project root with:
+
+```
+OPENAI_API_KEY=sk-your-openai-api-key
+REALTIME_MODEL=gpt-4o-realtime-preview-2024-12-17
+REALTIME_VOICE=verse
+REALTIME_SERVER_PORT=3030
+```
+
+2. Start the local token server:
+
+```
+npm run server
+```
+
+3. Run the app (in another terminal):
+
+```
+npm run ios
+# or
+npm run android
+```
+
+On first use, the app will request microphone permission.
